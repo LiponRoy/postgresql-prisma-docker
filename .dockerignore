@@ -1,0 +1,32 @@
+# Node modules (will be reinstalled inside container)
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Git
+.git
+.gitignore
+
+# Local environment
+.env
+.vscode
+.idea
+
+# Logs and caches
+logs
+*.log
+.cache
+.tmp
+coverage
+dist
+build
+out
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker volumes and data
+postgres-data
+pgadmin-data
