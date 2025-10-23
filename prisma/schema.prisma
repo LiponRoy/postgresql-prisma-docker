@@ -1,17 +1,23 @@
-// prisma/schema.prisma
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows", "linux-musl-openssl-3.0.x"]
+  output        = "../generated/prisma"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-  output   = "./generated/prisma"
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String 
+  email  String @unique
+  password  String 
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String  @unique
-}
+// After modifying the model, you must sync the schema with the database:
+//npx prisma migrate dev --name anything to write
+//npx prisma db push
+//npx prisma generate
+
