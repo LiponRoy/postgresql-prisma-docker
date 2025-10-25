@@ -9,14 +9,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  name  String 
-  email  String @unique
-  password  String 
+enum UserRole {
+  USER
+  ADMIN
 }
 
-// After modifying the model, you must sync the schema with the database:
+model User {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  password    String
+  role        UserRole  @default(USER)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// After modifying the model, must sync the schema with the database:
 //npx prisma migrate dev --name anything to write
 //npx prisma db push
 //npx prisma generate
