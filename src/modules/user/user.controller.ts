@@ -16,6 +16,27 @@ const signupUser = catchAsync(
   }
 );
 
+export const loginUser = catchAsync(async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  const { user, accessToken, refreshToken } = await userService.loginUser(email, password);
+
+  // Set HttpOnly cookie
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: false, 
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Login successful',
+    data: { user, accessToken },
+  });
+});
+
 export const userController = {
   signupUser,
+  loginUser
 };

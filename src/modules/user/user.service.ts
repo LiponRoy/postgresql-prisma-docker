@@ -1,5 +1,5 @@
 import { ApiError } from "../../utils/ApiError";
-import { hashPassword, isUserExistsByEmail } from "../../utils/auth.utils";
+import { generateTokens, hashPassword, isPasswordMatched, isUserExistsByEmail } from "../../utils/auth.utils";
 import { PrismaClient, User } from '../../../generated/prisma';
 import { ISignupUserRequest } from "./user.type";
 
@@ -21,6 +21,21 @@ const signupUser = async (body:ISignupUserRequest)=> {
   
 };
 
+const loginUser = async (email: string, password: string)=> {
+
+    const user = await isUserExistsByEmail(email);
+    if (!user) throw new ApiError(404, 'User not found');
+
+    const match = await isPasswordMatched(password, user.password);
+    if (!match) throw new ApiError(401, 'Invalid credentials');
+
+    const payload = { id: user.id, email: user.email, role: user.role };
+    const { accessToken, refreshToken } = generateTokens(payload);
+
+    return { user, accessToken, refreshToken };
+};
+
 export const userService = {
   signupUser,
+  loginUser
 }
