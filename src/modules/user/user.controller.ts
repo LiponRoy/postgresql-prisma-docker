@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { userService } from "./user.service";
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import ENV from "../../config";
 import { ApiError } from "../../utils/ApiError";
  
@@ -65,38 +65,86 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
 
 // handleRefreshToken user
 export const handleRefreshToken = catchAsync(async (req: Request, res: Response) => {
-
-  // getting refresh token
+  // Get refresh token from cookie
   const refreshToken = req.cookies['refreshToken-Me'];
 
-  // verify refreshToken with refreshToken and it's refresh_secret
-   const decodeToken = jwt.verify(refreshToken,ENV.jwt.refresh_secret);
+  if (!refreshToken) {
+    throw new ApiError(401, 'Refresh token missing. Please log in again.');
+  }
 
-   // If expired refresh token, then it will null or empty, 
-   if (!decodeToken) throw new ApiError(400, 'Invalid refreshToken please Login again');
+  let decoded: JwtPayload;
 
-   // if refresh token valid then create an access token again from refreshToken's payload . 
-  // create payload from decodeToken
-   const payload ={ id: decodeToken.id, email: decodeToken.email, role: decodeToken.role }
+  try {
+    // Verify refresh token with refresh_secret
+    decoded = jwt.verify(refreshToken, ENV.jwt.refresh_secret) as JwtPayload;
+  } catch (error: any) {
+    if (error.name === 'TokenExpiredError') {
+      throw new ApiError(401, 'Refresh token expired. Please log in again.');
+    } else if (error.name === 'JsonWebTokenError') {
+      throw new ApiError(401, 'Invalid refresh token. Please log in again.');
+    } else {
+      throw new ApiError(401, 'Authentication failed.');
+    }
+  }
 
-   const newAccessToken = jwt.sign(payload, ENV.jwt.access_secret, {
-       expiresIn: ENV.jwt.access_expires_in,
-     });
+  // Create new access token from decoded payload
+  const payload = {
+    id: decoded.id,
+    email: decoded.email,
+    role: decoded.role,
+  };
 
-  // Set newAccessToken to cookie
-  res.cookie('accessToken-Me', newAccessToken, {
-    httpOnly: true,
-    // secure: false, 
-    sameSite: 'none',
-    maxAge: 1 * 60 * 1000, // 1 minuit
+  const newAccessToken = jwt.sign(payload, ENV.jwt.access_secret, {
+    expiresIn: ENV.jwt.access_expires_in,
   });
 
-  // finally
+  // Set new access token as cookie
+  res.cookie('accessToken-Me', newAccessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // ✅ secure in production
+    sameSite: 'none',
+    maxAge: 1 * 60 * 1000, // 1 minute
+  });
+
+  // Send response
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'handleRefreshToken and create access token again successful',
-    data: { }, 
+    message: 'New access token issued successfully.',
+    data: {},
+  });
+});
+
+
+// handle Protected Rote
+export const handleProtectedRoute = catchAsync(async (req: Request, res: Response) => {
+  const accessToken = req.cookies['accessToken-Me'];
+
+  if (!accessToken) {
+    throw new ApiError(401, 'Access token missing. Please log in.');
+  }
+
+  let decoded: JwtPayload;
+
+  try {
+    decoded = jwt.verify(accessToken, ENV.jwt.access_secret) as JwtPayload;
+  } catch (error: any) {
+    // Handle specific JWT errors
+    if (error.name === 'TokenExpiredError') {
+      throw new ApiError(401, 'Access token expired. Please log in again.');
+    } else if (error.name === 'JsonWebTokenError') {
+      throw new ApiError(401, 'Invalid access token. Please log in again.');
+    } else {
+      throw new ApiError(401, 'Authentication failed.');
+    }
+  }
+
+  // If everything okay
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Protected resources access',
+    data: { decoded },
   });
 });
 
@@ -104,5 +152,6 @@ export const userController = {
   signupUser,
   loginUser,
   logout,
-  handleRefreshToken
+  handleRefreshToken,
+  handleProtectedRoute
 };
