@@ -21,7 +21,7 @@ export const auth = (...allowedRoles: string[]) => {
 
       // check role-based access
       if (allowedRoles.length && !allowedRoles.includes(decoded.role)) {
-        throw new ApiError(403, 'Forbidden. You do not have access to this resource.');
+        throw new ApiError(403, 'Forbidden (admin only). You do not have access to this resource.');
       }
 
       next();
