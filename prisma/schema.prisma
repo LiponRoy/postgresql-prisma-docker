@@ -24,8 +24,17 @@ model User {
   updatedAt   DateTime  @updatedAt
 }
 
+model Department {
+  id           Int       @id @default(autoincrement())
+  dep_name     String
+  description  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
 // After modifying the model, must sync the schema with the database:
 //npx prisma migrate dev --name anything to write
 //npx prisma db push
-//npx prisma generate
+//npx prisma generate.
+
 

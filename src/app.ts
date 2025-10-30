@@ -6,6 +6,7 @@ import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { userRoutes } from "./modules/user/user.routes";
 import cookieParser from 'cookie-parser';
 import notFound from "./middlewares/notFound";
+import { departmentRoutes } from "./modules/department/department.routes";
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,7 @@ const prisma = new PrismaClient();
 
 app.get("/", (req, res) => res.send(" Express + Prisma + Docker + TypeScript"));
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/department', departmentRoutes);
 
 // Error handler
 app.use(globalErrorHandler);
