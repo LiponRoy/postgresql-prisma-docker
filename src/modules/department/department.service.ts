@@ -17,6 +17,13 @@ const createDepartment = async (body:IDepartment)=> {
   
 };
 
+export const getAllDepartments = async () => {
+  const departments = await prisma.department.findMany({
+    orderBy: { createdAt: "desc" }, // newest first
+  });
+
+  return departments;
+};
 
 export const updateDepartment = async (id: number, body: IDepartment) => {
   const { dep_name, description } = body;
@@ -49,5 +56,6 @@ export const getSingleDepartment = async (id: number) => {
 export const departmentService = {
   createDepartment,
   updateDepartment,
-  getSingleDepartment
+  getSingleDepartment,
+  getAllDepartments
 } 

@@ -17,20 +17,20 @@ const createDepartment = catchAsync(
   }
 );
 
-// Update Department
-export const updateDepartment = catchAsync(
+// Get all departments
+export const getAllDepartments = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params; // get department id from URL
-    const result = await departmentService.updateDepartment(+id, req.body);
+    const result = await departmentService.getAllDepartments();
 
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "Department updated successfully!",
+      message: "Departments retrieved successfully!",
       data: result,
     });
   }
 );
+
 
 // Get single department by ID
 export const getSingleDepartment = catchAsync(
@@ -48,8 +48,25 @@ export const getSingleDepartment = catchAsync(
 );
 
 
+// Update Department
+export const updateDepartment = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params; // get department id from URL
+    const result = await departmentService.updateDepartment(+id, req.body);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Department updated successfully!",
+      data: result,
+    });
+  }
+);
+
+
 export const departmentController = {
   createDepartment,
   updateDepartment,
-  getSingleDepartment
+  getSingleDepartment,
+  getAllDepartments
 };

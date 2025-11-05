@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/create',departmentController.createDepartment);
 router.put("/update/:id", departmentController.updateDepartment);
 router.get("/:id", departmentController.getSingleDepartment); //
+router.get("/", departmentController.getAllDepartments); 
 
 
 export const departmentRoutes = router;
