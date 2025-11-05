@@ -17,7 +17,23 @@ const createDepartment = catchAsync(
   }
 );
 
+// Update Department
+export const updateDepartment = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params; // get department id from URL
+    const result = await departmentService.updateDepartment(+id, req.body);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Department updated successfully!",
+      data: result,
+    });
+  }
+);
+
 
 export const departmentController = {
   createDepartment,
+  updateDepartment,
 };

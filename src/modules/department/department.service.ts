@@ -18,6 +18,22 @@ const createDepartment = async (body:IDepartment)=> {
 };
 
 
+export const updateDepartment = async (id: number, body: IDepartment) => {
+  const { dep_name, description } = body;
+
+  const updatedDepartment = await prisma.department.update({
+    where: { id },
+    data: { dep_name, description },
+  });
+
+  return {
+    dep_name: updatedDepartment.dep_name,
+    description: updatedDepartment.description,
+  };
+};
+
+
 export const departmentService = {
   createDepartment,
+  updateDepartment
 } 
