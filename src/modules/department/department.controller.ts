@@ -63,10 +63,26 @@ export const updateDepartment = catchAsync(
   }
 );
 
+// Delete department
+export const deleteDepartment = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const result = await departmentService.deleteDepartment(+id);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Department deleted successfully!",
+      data: result,
+    });
+  }
+);
+
 
 export const departmentController = {
   createDepartment,
   updateDepartment,
   getSingleDepartment,
-  getAllDepartments
+  getAllDepartments,
+  deleteDepartment
 };

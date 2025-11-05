@@ -9,6 +9,7 @@ router.post('/create',departmentController.createDepartment);
 router.put("/update/:id", departmentController.updateDepartment);
 router.get("/:id", departmentController.getSingleDepartment); //
 router.get("/", departmentController.getAllDepartments); 
+router.delete("/:id", departmentController.deleteDepartment);
 
 
 export const departmentRoutes = router;

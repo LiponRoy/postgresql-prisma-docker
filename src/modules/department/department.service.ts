@@ -53,9 +53,26 @@ export const getSingleDepartment = async (id: number) => {
 };
 
 
+export const deleteDepartment = async (id: number) => {
+  const existingDepartment = await prisma.department.findUnique({
+    where: { id },
+  });
+
+  if (!existingDepartment) {
+    throw new Error("Department not found!");
+  }
+
+  await prisma.department.delete({
+    where: { id },
+  });
+
+  return { id, deleted: true };
+};
+
 export const departmentService = {
   createDepartment,
   updateDepartment,
   getSingleDepartment,
-  getAllDepartments
+  getAllDepartments,
+  deleteDepartment
 } 
