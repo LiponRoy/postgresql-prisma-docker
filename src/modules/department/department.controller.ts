@@ -32,8 +32,24 @@ export const updateDepartment = catchAsync(
   }
 );
 
+// Get single department by ID
+export const getSingleDepartment = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const result = await departmentService.getSingleDepartment(+id);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Department retrieved successfully!",
+      data: result,
+    });
+  }
+);
+
 
 export const departmentController = {
   createDepartment,
   updateDepartment,
+  getSingleDepartment
 };

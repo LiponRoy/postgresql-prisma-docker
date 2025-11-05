@@ -33,7 +33,21 @@ export const updateDepartment = async (id: number, body: IDepartment) => {
 };
 
 
+export const getSingleDepartment = async (id: number) => {
+  const department = await prisma.department.findUnique({
+    where: { id },
+  });
+
+  if (!department) {
+    throw new Error("Department not found!");
+  }
+
+  return department;
+};
+
+
 export const departmentService = {
   createDepartment,
-  updateDepartment
+  updateDepartment,
+  getSingleDepartment
 } 
