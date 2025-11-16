@@ -23,11 +23,11 @@ model User {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
-
+ 
 model Department {
   id           Int        @id @default(autoincrement())
   dep_name     String
-  description  String?
+  description  String?  
   employees    Employee[]   // <-- this is the opposite relation field
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
@@ -42,7 +42,7 @@ model Employee {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
-
+ 
 
 // After modifying the model, must sync the schema with the database:
 //npx prisma migrate dev --name anything to write

@@ -25,7 +25,7 @@ export const getAllDepartments = async () => {
   return departments;
 };
 
-export const updateDepartment = async (id: number, body: IDepartment) => {
+export const updateDepartment = async (id: number, body: IDepartment) => { 
   const { dep_name, description } = body;
 
   const updatedDepartment = await prisma.department.update({
