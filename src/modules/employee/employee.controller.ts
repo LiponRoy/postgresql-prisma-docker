@@ -7,7 +7,7 @@ import { employeeService } from "./employee.service";
 const createEmployee = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
 
-    const result = await employeeService.creatEemployee(req.body);
+    const result = await employeeService.createEmployee(req.body);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -17,7 +17,21 @@ const createEmployee = catchAsync(
   }
 );
 
+const getAllEmployee = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+
+    const result = await employeeService.getAllEmployee();
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Employee Getting Successfully !", 
+      data: result,
+    });
+  }
+);
+
 
 export const employeeController = {
   createEmployee,
+  getAllEmployee,
 };

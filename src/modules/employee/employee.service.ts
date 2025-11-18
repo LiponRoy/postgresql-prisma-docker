@@ -4,19 +4,25 @@ import { PrismaClient, User } from '../../../generated/prisma';
 
 const prisma = new PrismaClient(); 
 
-const creatEemployee = async (body:any)=> {
-
-    const { name,dob,department } = body;
-
-    const employee = await prisma.employee.create({
-      data: { name,dob,department },
+const createEmployee = async (data:any)=> {
+return await prisma.employee.create({
+      data,
+      include: { department: true },  //
     });
+  
+};
 
-    return { name: employee.name, dob: employee.dob, department: employee.dob };
+const getAllEmployee = async ()=> {
+    return await prisma.employee.findMany({
+      include: {
+        department: true,
+      },
+    });
   
 };
 
 export const employeeService = {
-  creatEemployee,
+  createEmployee,
+  getAllEmployee
 
 } 

@@ -7,13 +7,14 @@ const prisma = new PrismaClient();
 
 const createDepartment = async (body:IDepartment)=> {
 
-    const { dep_name,description } = body;
+ const { dep_name, description } = body;
 
-    const department = await prisma.department.create({
-      data: { dep_name,description },
+    return await prisma.department.create({
+      data: {
+        dep_name: dep_name,      // ✔️ correct
+        description: description // ✔️ correct
+      },
     });
-
-    return { dep_name: department.dep_name, description: department.description };
   
 };
 
